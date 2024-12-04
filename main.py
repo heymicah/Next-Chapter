@@ -1,5 +1,5 @@
 import csv,os
-from collections import defaultdict
+from collections import defaultdict, deque
 from clean_data import subjects
 
 def list_subjects(subjects):
@@ -77,6 +77,44 @@ M
 function 3/4:
 DFS v BFS search (each of these should return 5 book titles)
 '''
+def bfs(graph, start_title, max_connections = 5):
+    visited = set()
+    q = deque()
+    q.append(start_title)
+    visited.add(start_title)
+    connections = []
+
+    while(len(q) != 0 and len(connections) < max_connections):
+        front = q.popleft()
+        neighbors = graph.get(front, [])
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append(neighbor)
+                connections.append(neighbor)
+
+                if len(connections) >= max_connections:
+                    break
+
+    return connections
+
+def dfs(graph, start_title, max_connections=5):
+    visited = set()
+    stack = []
+    stack.append(start_title)
+    connections = []
+
+    while stack and len(connections) < max_connections:
+        front = stack.pop()  
+
+        if front not in visited:
+            visited.add(front)
+            connections.append(front) 
+
+            neighbors = graph.get(front, [])
+            stack.extend(neighbors)
+
+    return connections
 
 '''
 G
@@ -113,5 +151,9 @@ def main():
     # list_subjects(subjects)
     genre = "Classics"
     graph = create_graph(genre)
+    dfs_connections = dfs(graph, "Jane Eyre (Wordsworth Classics)")
+    bfs_connections = bfs(graph, "Jane Eyre (Wordsworth Classics)")
+    print(dfs_connections)
+    print(bfs_connections)
     
 main()
