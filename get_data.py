@@ -51,14 +51,14 @@ def fetch_books_by_genre(genre, max_books=1000):
 # genres = biography, fantasy, fiction, history, magic, mystery, romance, science_fiction
 # subjects = ["Juvenile fiction", "Children's literature", "Children's fiction"]
 genres = [
-    "magic"
+    "fantasy"
 ]
 
 # Collect data
 all_books = []
 for genre in genres:
     print(f"Fetching books for genre: {genre}")
-    books = fetch_books_by_genre(genre, max_books=5)  # Adjust as needed
+    books = fetch_books_by_genre(genre, max_books=15000)  # Adjust as needed
     all_books.extend(books)
 
 # Save to CSV
