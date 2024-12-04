@@ -49,9 +49,9 @@ def fetch_books_by_genre(genre, max_books=1000):
 
 # Genres to query
 # genres = biography, fantasy, fiction, history, magic, mystery, romance, science_fiction
-# subjects = ["Juvenile fiction", "Children's literature", "Children's fiction"]
+# subjects = ["Juvenile fiction", "Children's literature", "Children's fiction", "Drama"]
 genres = [
-    "fantasy"
+    "mystery"
 ]
 
 # Collect data

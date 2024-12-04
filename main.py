@@ -1,3 +1,4 @@
+from collections import defaultdict
 import requests
 import json
 import csv
@@ -50,6 +51,9 @@ def fetch_my_query(title):
 #         return moods
 #     except (KeyError, IndexError):
 #         return None
+
+# genres = ["fantasy","fiction","romance","magic","mystery","history","science_fiction"]
+# subjects = ["Juvenile fiction", "Children's literature", "Children's fiction", "fairy tales", "politics"]
     
 def book_titles():
     titles=[]
@@ -64,9 +68,51 @@ def book_titles():
             titles.append(row[0])
     return titles
 
+# Function to parse the subjects from a string
+def get_subjects(line, subjects):
+    # Split the string by commas and strip whitespace
+    all_subjects = [subject.strip().lower() for subject in line.split(",")]
+    # Filter for relevant subjects
+    return set(subject for subject in all_subjects if subject in map(str.lower, subjects))
+
+def create_book_map(csv_file_path, subjects):
+    book_map = defaultdict(list)
+    books = {}  # Temporary storage for book subjects
+    titles = []
+
+    # Read the CSV file
+    with open(csv_file_path, "r", encoding="utf-8") as file:
+        reader = csv.reader(file)
+        for line in reader:
+            # Assuming format: Title, Genre, Subjects
+            title = line[0].strip()
+            titles.append(title)
+            relevant_subjects = get_subjects(line[2], subjects)
+            books[title] = relevant_subjects
+
+    # Build connections
+    for book1, subjects1 in books.items():
+        for book2, subjects2 in books.items():
+            if book1 != book2 and subjects1 & subjects2:  # Check for shared subjects
+                book_map[book1].append(book2)
+
+    return book_map
+
+
+
+
+
 def main():
-    titles = book_titles()
-    print(f"Total Number of Books: {len(titles)}")
+    subjects = [
+    "Fiction", "Drama", "Historical fiction", "Coming of age", "Crime", "Mystery",
+    "Children", "Juvenile fiction", "biography", "fiction", "history", 
+    "magic", "mystery", "science_fiction"]
+
+    graph = create_book_map(".csv", subjects)
+    print(len(graph))
+    
+   
+
     
 
 main()
