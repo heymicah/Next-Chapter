@@ -1,6 +1,7 @@
 import csv,os
 from collections import defaultdict, deque
 from clean_data import subjects
+from flask import Flask, request, jsonify
 
 def list_subjects(subjects):
     i = 1
@@ -59,6 +60,28 @@ function 1:
 
     return title & genre (store in main)
 '''
+app = Flask(__name__)
+@app.route('/get_user_input', methods=['OPTIONS', 'POST'])
+def get_user_input():
+    if request.method == 'OPTIONS':
+        response = jsonify({"message": "CORS preflight"})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+        return response
+
+    print("Received POST request")
+    data = request.get_json()
+    print(f"Request data: {data}")
+    title = data.get('title')
+    genre = data.get('genre')
+    # Process the title and genre as needed
+    print(f"Title: {title}, Genre: {genre}")
+    response = jsonify({"message": "Data received", "title": title, "genre": genre})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
 
 
 def create_graph(subject):
@@ -158,3 +181,6 @@ def main():
     print(bfs_connections)
     
 main()
+
+# if __name__ == "__main__":
+#     app.run(debug=True)
