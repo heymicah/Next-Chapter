@@ -1,0 +1,46 @@
+.results-container {
+    background-color: #FFFBE2; 
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: 'Modak', sans-serif; 
+    padding: 1px 40px; 
+    background-image: url('./assets/Images/TransparentBook.png'); 
+    background-size: 99%; 
+    background-repeat: no-repeat; 
+    background-position: center;
+    
+  }
+  
+  .results-image {
+    display: none; 
+  }
+
+
+  .results-header {
+    font-size: 1.5rem; 
+    margin-top: 250px;
+    position: absolute; 
+    left: 70px; 
+  }
+  
+  .results-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .left-half {
+    width: 50%;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+  }
+  
+  .right-half {
+    width: 50%;
+  }
+  
+ 
