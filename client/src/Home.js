@@ -11,6 +11,7 @@ function Home() {
         <i className="fas fa-search search-icon"></i> {}
         <input type="text" id="myTextInput" className="home-textbox" placeholder="Enter text here" /> {}
       </div>
+      <button onClick={() => alert('Button clicked')} className="home-button">Search</button> {}
     </div>
   );
 }
