@@ -19,6 +19,7 @@ function Home() {
       </div>
       <button onClick={handleClick} className="home-button">Search</button>
     </div>
+    
   );
 }
 
