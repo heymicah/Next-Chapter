@@ -15,7 +15,7 @@ def list_subjects(subjects):
             print()
         
 # create graph based off of passed in subject
-def parse_and_create_connections(file_path):
+def parse_and_create_connections(file_path, excluded_cat):
     book_categories = defaultdict(set)  # Map each category to the titles in it
     book_connections = defaultdict(list)  # Final dictionary of book connections
     book_data = {}  # Store each book's categories for later use
@@ -30,7 +30,7 @@ def parse_and_create_connections(file_path):
         for row in reader:
             title = row['Title'].strip()
             categories = row['Category'].split(',')  # Split categories by commas
-            categories = [cat.strip() for cat in categories]  # Clean up whitespace
+            categories = [cat.strip() for cat in categories if cat.strip() != excluded_cat]
 
             # Save categories for the book
             book_data[title] = categories
@@ -63,7 +63,7 @@ function 1:
 
 def create_graph(subject):
     file_path = f'data/subjects/{subject}.csv'
-    graph = parse_and_create_connections(file_path)
+    graph = parse_and_create_connections(file_path,subject)
     print('\n')
     if not graph:
         print("Could not create graph. Check file path.")
@@ -110,8 +110,8 @@ method 2 books:
 #         print(book)
 
 def main():
-    list_subjects(subjects)
-    genre = "Young Adult Fiction"
+    # list_subjects(subjects)
+    genre = "Classics"
     graph = create_graph(genre)
     
 main()
