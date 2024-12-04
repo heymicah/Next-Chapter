@@ -60,28 +60,34 @@ function 1:
 
     return title & genre (store in main)
 '''
-app = Flask(__name__)
-@app.route('/get_user_input', methods=['OPTIONS', 'POST'])
-def get_user_input():
-    if request.method == 'OPTIONS':
-        response = jsonify({"message": "CORS preflight"})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-        return response
+def get_book_info():
+    categories = [
+        "History", "Biography & Autobiography", "Business & Economics", "Political Science",
+        "Romance", "Fantasy", "Fiction", "Science Fiction", "Young Adult Fiction", "Juvenile Nonfiction",
+        "Classics", "Action & Adventure", "Mystery & Detective", "Thrillers", "Poetry", "Cooking",
+        "Religion", "General"
+    ]
 
-    print("Received POST request")
-    data = request.get_json()
-    print(f"Request data: {data}")
-    title = data.get('title')
-    genre = data.get('genre')
-    # Process the title and genre as needed
-    print(f"Title: {title}, Genre: {genre}")
-    response = jsonify({"message": "Data received", "title": title, "genre": genre})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-    return response
+    title = input("Enter the book title: ")
+    print("")
+    print("Select a genre from the following categories:")
+    for i, category in enumerate(categories, 1):
+        print(f"{i}. {category}")
+
+    while True:
+        genre_input = input("Enter the number corresponding to the genre: ")
+        try:
+            genre_index = int(genre_input) - 1
+            if 0 <= genre_index < len(categories):
+                genre = categories[genre_index]
+                break
+            else:
+                print("The genre you selected is not in the provided categories. Please try again.")
+        except ValueError:
+            print("Invalid input. Please enter a number corresponding to the genre.")
+
+    return title, genre
+
 
 
 def create_graph(subject):
@@ -144,43 +150,79 @@ def dfs(graph, start_title, max_connections=5):
 G
 
 function 5: main ()
-
 -attributes
     title, genre, graph, books (DFS & BFS)
-
 display what the original book title & genre was
-
 call function 2 create the graph
-
 graph passed into functions 3/4
-
-call functions 3/4 (return books)
-
+call functions 3/4 (return books
 display books
-
 method 1 books:
-
 method 2 books:
-
 * easily display ??
 
 '''
+def main():
+    title, genre = get_book_info()
+    graph = create_graph(genre)
+    dfs_connections = dfs(graph, title)
+    bfs_connections = bfs(graph, title)
+    print(f"Title: {title}, Genre: {genre}")
+    print("")
+    print("DFS Connections:")
+    print("\n".join(dfs_connections))
+    print("")
+    print("BFS Connections:")
+    print("\n".join(bfs_connections))
+
+if __name__ == "__main__":
+    main()
 
 # title = "Goat Brothers"
 # print(f"{title} is connected to: ")
 # for book in list(connections[title])[:5]:
 #         print(book)
 
-def main():
-    # list_subjects(subjects)
-    genre = "Classics"
-    graph = create_graph(genre)
-    dfs_connections = dfs(graph, "Jane Eyre (Wordsworth Classics)")
-    bfs_connections = bfs(graph, "Jane Eyre (Wordsworth Classics)")
-    print(dfs_connections)
-    print(bfs_connections)
+# def main():
+#     # list_subjects(subjects)
+#     app.run(debug=True)
+#     genre = "Classics"
+#     graph = create_graph(genre)
+#     dfs_connections = dfs(graph, "Jane Eyre (Wordsworth Classics)")
+#     bfs_connections = bfs(graph, "Jane Eyre (Wordsworth Classics)")
+#     print(dfs_connections)
+#     print(bfs_connections)
     
-main()
+# main()
+
+
+
+
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
+
+
+
+# app = Flask(__name__)
+# @app.route('/get_user_input', methods=['OPTIONS', 'POST'])
+# def get_user_input():
+#     if request.method == 'OPTIONS':
+#         response = jsonify({"message": "CORS preflight"})
+#         response.headers.add("Access-Control-Allow-Origin", "*")
+#         response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+#         response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+#         return response
+
+#     print("Received POST request")
+#     data = request.get_json()
+#     print(f"Request data: {data}")
+#     title = data.get('title')
+#     genre = data.get('genre')
+#     # Process the title and genre as needed
+#     print(f"Title: {title}, Genre: {genre}")
+#     response = jsonify({"message": "Data received", "title": title, "genre": genre})
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+#     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+#     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+#     return response
