@@ -109,7 +109,8 @@ def dfs(graph, start_title, max_connections=5):
 
         if front not in visited:
             visited.add(front)
-            connections.append(front) 
+            if front != start_title:
+                connections.append(front)
 
             neighbors = graph.get(front, [])
             stack.extend(neighbors)
