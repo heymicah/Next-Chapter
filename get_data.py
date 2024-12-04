@@ -16,13 +16,26 @@ def fetch_books_by_genre(genre, max_books=1000):
 
         data = response.json()
         works = data.get('works', [])
+        # for work in works:
+        #     books.append({
+        #         "Title": work.get("title", "Unknown Title"),
+        #         "Genre": genre.title()
+        #     })
+        #     if len(books) >= max_books:
+        #         break
         for work in works:
-            books.append({
-                "Title": work.get("title", "Unknown Title"),
-                "Genre": genre.title()
-            })
-            if len(books) >= max_books:
-                break
+                # Extract the title and subjects (if available)
+                title = work.get("title", "Unknown Title")
+                subjects = work.get("subject", [])  # List of subjects
+                subject_str = ", ".join(subjects) if subjects else "Unknown Subject"
+                books.append({
+                    "Title": title,
+                    "Genre": genre.title(),
+                    "Subjects": subject_str
+                })
+
+                if len(books) >= max_books:
+                    break
         
         # Check if there's a next page
         next_offset = data.get('offset', 0) + 100
@@ -36,6 +49,7 @@ def fetch_books_by_genre(genre, max_books=1000):
 
 # Genres to query
 # genres = biography, fantasy, fiction, history, magic, mystery, romance, science_fiction
+# subjects = ["Juvenile fiction", "Children's literature", "Children's fiction"]
 genres = [
     "magic"
 ]
@@ -44,7 +58,7 @@ genres = [
 all_books = []
 for genre in genres:
     print(f"Fetching books for genre: {genre}")
-    books = fetch_books_by_genre(genre, max_books=15000)  # Adjust as needed
+    books = fetch_books_by_genre(genre, max_books=5)  # Adjust as needed
     all_books.extend(books)
 
 # Save to CSV
