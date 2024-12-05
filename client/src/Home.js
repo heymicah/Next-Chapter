@@ -6,18 +6,16 @@ import titleImage from './assets/Images/TitleImage.png';
 function Home() {
   const navigate = useNavigate();
   const [genre, setGenre] = useState('');
-
   const handleClick = async () => {
     const title = document.getElementById('TextInput').value;
     console.log(`Sending title: ${title}, genre: ${genre}`);
     try {
       // Send the title and genre to the backend
-      const response = await fetch('http://127.0.0.1:5000/get_user_input', {
-        method: 'POST',
+      const response = await fetch(`http://127.0.0.1:8000/book-connections?title=${encodeURIComponent(title)}&genre=${encodeURIComponent(genre)}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, genre }),
       });
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -25,7 +23,7 @@ function Home() {
       const data = await response.json();
       console.log(`Received response: ${JSON.stringify(data)}`);
       // Navigate to the results page
-      navigate('/results', { state: { title, genre } });
+      navigate('/results', { state: { data } });
     } catch (error) {
       console.error('Failed to fetch:', error);
     }
