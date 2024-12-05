@@ -1,56 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import './Results.css';
 
 function Results() {
-  const [title, setTitle] = useState('');
-  const [genre, setGenre] = useState('');
-  const [results, setResults] = useState('');
+  const location = useLocation();
+  const { data } = location.state || {};
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const response = await fetch('/get_user_input', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title, genre }),
-    });
-    const data = await response.json();
-    setResults(`DFS Connections: ${data.dfs.join(', ')}\nBFS Connections: ${data.bfs.join(', ')}`);
-  };
+  if (!data) {
+    return <div>No data received. Please go back and try again.</div>;
+  }
+
+  const { title, genre, dfs_connections, bfs_connections } = data;
 
   return (
     <div className="results-container">
-      <div className="results-content">
-        <div className="left-half">
-          <div className="results-header">
-            Enter Book Title and Genre
-          </div>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="title">Title:</label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            /><br /><br />
-            <label htmlFor="genre">Genre:</label>
-            <input
-              type="text"
-              id="genre"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-            /><br /><br />
-            <input type="submit" value="Submit" />
-          </form>
-        </div>
-        <div className="right-half">
-          <textarea
-            className="results-textbox"
-            value={results}
-            readOnly
-          />
-        </div>
+      <h1>Search Results</h1>
+      <div className="book-info">
+        <p><strong>Title:</strong> {title}</p>
+        <p><strong>Genre:</strong> {genre}</p>
+      </div>
+      <div className="connections">
+        <h2>DFS Connections</h2>
+        {dfs_connections && dfs_connections.length > 0 ? (
+          <ul>
+            {dfs_connections.map((connection, index) => (
+              <li key={index}>{connection}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No DFS connections found.</p>
+        )}
+        <h2>BFS Connections</h2>
+        {bfs_connections && bfs_connections.length > 0 ? (
+          <ul>
+            {bfs_connections.map((connection, index) => (
+              <li key={index}>{connection}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No BFS connections found.</p>
+        )}
       </div>
     </div>
   );

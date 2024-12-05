@@ -2,6 +2,21 @@ import csv,os
 from collections import defaultdict, deque
 from clean_data import subjects
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": [
+            "Content-Type", 
+            "Authorization", 
+            "Access-Control-Allow-Origin"
+        ],
+        "supports_credentials": True
+    }
+})
 
 def list_subjects(subjects):
     i = 1
@@ -162,67 +177,40 @@ method 2 books:
 * easily display ??
 
 '''
-def main():
-    title, genre = get_book_info()
-    graph = create_graph(genre)
-    dfs_connections = dfs(graph, title)
-    bfs_connections = bfs(graph, title)
-    print(f"Title: {title}, Genre: {genre}")
-    print("")
-    print("DFS Connections:")
-    print("\n".join(dfs_connections))
-    print("")
-    print("BFS Connections:")
-    print("\n".join(bfs_connections))
 
-if __name__ == "__main__":
-    main()
+@app.route('/book-connections', methods=['GET'])
+def get_book_connections():
+    # Retrieve parameters from query string
+    title = request.args.get('title')
+    genre = request.args.get('genre')
 
-# title = "Goat Brothers"
-# print(f"{title} is connected to: ")
-# for book in list(connections[title])[:5]:
-#         print(book)
+    # Validate parameters
+    if not title or not genre:
+        return jsonify({
+            'error': 'Both title and genre are required'
+        }), 400
 
-# def main():
-#     # list_subjects(subjects)
-#     app.run(debug=True)
-#     genre = "Classics"
-#     graph = create_graph(genre)
-#     dfs_connections = dfs(graph, "Jane Eyre (Wordsworth Classics)")
-#     bfs_connections = bfs(graph, "Jane Eyre (Wordsworth Classics)")
-#     print(dfs_connections)
-#     print(bfs_connections)
-    
-# main()
+    try:
+        # Create graph based on genre
+        graph = create_graph(genre)
 
+        # Perform searches
+        dfs_connections = dfs(graph, title)
+        bfs_connections = bfs(graph, title)
 
+        return jsonify({
+            'title': title,
+            'genre': genre,
+            'dfs_connections': dfs_connections,
+            'bfs_connections': bfs_connections
+        })
 
+    except Exception as e:
+        return jsonify({
+            'error': 'An unexpected error occurred',
+            'details': str(e)
+        }), 500
 
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8000)
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
-
-
-# app = Flask(__name__)
-# @app.route('/get_user_input', methods=['OPTIONS', 'POST'])
-# def get_user_input():
-#     if request.method == 'OPTIONS':
-#         response = jsonify({"message": "CORS preflight"})
-#         response.headers.add("Access-Control-Allow-Origin", "*")
-#         response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-#         response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-#         return response
-
-#     print("Received POST request")
-#     data = request.get_json()
-#     print(f"Request data: {data}")
-#     title = data.get('title')
-#     genre = data.get('genre')
-#     # Process the title and genre as needed
-#     print(f"Title: {title}, Genre: {genre}")
-#     response = jsonify({"message": "Data received", "title": title, "genre": genre})
-#     response.headers.add("Access-Control-Allow-Origin", "*")
-#     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-#     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-#     return response
